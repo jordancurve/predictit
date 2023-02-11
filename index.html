@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 html * {
-  font-size: 3.5rem;
+  font-size: 8vw;
 }
 </style>
 <title>PredictIt Kelly bet calculator</title>
@@ -50,9 +50,9 @@ html * {
   <h1>PredictIt Kelly bet</h1>
   <form>
     <table>
-      <tr><td>Chance of winning<td><input id="win_percent" size=2 maxlength=2 placeholder="51">%</td></tr>
-      <tr><td>Ticket price<td><input id="price" size=2 maxlength=2 placeholder="32"> ¢</td></tr>
-      <tr><td>Investible capital<td>$<input id="capital" size=7 maxsize=10 placeholder="500"></td></tr>
+      <tr><td>Chance of winning<td><input type=number id="win_percent" size=2 maxlength=2 placeholder="51">%</td></tr>
+      <tr><td>Ticket price<td><input type=number id="price" size=2 maxlength=2 placeholder="32"> ¢</td></tr>
+      <tr><td>Investible capital<td>$<input type=number id="capital" size=7 maxsize=10 placeholder="500"></td></tr>
       <tr><td colspan=2></td></tr>
       <tr><td colspan=2><b>Kelly investment</b></td></tr>
       <tr><td>Buy</td><td><span id="num_tickets"></span> tickets</td></tr>
