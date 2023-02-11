@@ -2,11 +2,17 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-html * {
-  font-size: 8vw;
+td {
+  font-size: 28px;
+}
+input, select, textarea, button {
+  font-size:inherit;
+}
+#tax1,#tax2 {
+  visibility: hidden;
 }
 </style>
-<title>PredictIt Kelly bet calculator</title>
+<title>Kelly criterion calculator for PredictIt</title>
 <script>
   function e(id) {
     return document.getElementById(id)
@@ -14,10 +20,33 @@ html * {
   function v(id) {
     return e(id).value
   }
+  function vis(id, val) {
+    e(id).style.visibility = val
+  }
+  function show(id) {
+    vis(id, "visible")
+  }
+  function hide(id) {
+    vis(id, "hidden")
+  }
+  function init() {
+    e("win_percent").addEventListener('input', update)
+    e("price").addEventListener('input', update)
+    e("capital").addEventListener('input', update)
+    e("tax_percent").addEventListener('input', update)
+  }
   function update() {
     var winPercent = Number(v("win_percent"))
     var priceCents = Number(v("price"))
     var capitalDollars = Number(v("capital"))
+    var taxPercent = Number(v("tax_percent"))
+    if (taxPercent == 0) {
+      hide("tax1")
+      hide("tax2")
+    } else {
+      show("tax1")
+      show("tax2")
+    }
     if (winPercent == 0 || priceCents == 0 || capitalDollars == 0) {
       return
     }
@@ -26,42 +55,39 @@ html * {
 
     var profitBFT = 1/(priceDollars) - 1
     var profitAF = 0.855/priceDollars - 0.905
-    var profitAFT = 0.75 * profitAF
+    var profitAFT = (1 - taxPercent/100) * profitAF
 
     var kellyBetFrac = Math.max(0, pWin - (1 - pWin)/profitAFT)
     var kellyBetSize = Math.floor(capitalDollars * kellyBetFrac)
 
-    var numTickets = Math.floor(kellyBetSize/priceDollars)
+    var numShares = Math.floor(kellyBetSize/priceDollars)
 
     e("profit_bft").innerText = (kellyBetSize * profitBFT).toFixed(0)
     e("profit_af").innerText = (kellyBetSize * profitAF).toFixed(0)
     e("profit_aft").innerText = (kellyBetSize * profitAFT).toFixed(0)
-    e("num_tickets").innerText = numTickets
+    e("num_shares").innerText = numShares
     e("invest_dollars").innerText = kellyBetSize
-  }
-  function init() {
-    e("win_percent").addEventListener('input', update)
-    e("price").addEventListener('input', update)
-    e("capital").addEventListener('input', update)
   }
 </script>
 </head>
 <body onload="init()">
-  <h1>PredictIt Kelly bet</h1>
+  <div style="font-size: 35px">Kelly criterion calculator<br>
+    for PredictIt &nbsp; &nbsp; &nbsp; &nbsp; (<a href="help.html">help</a>) </div>
   <form>
-    <table>
-      <tr><td>Chance of winning<td><input type=number id="win_percent" size=2 maxlength=2 placeholder="51">%</td></tr>
-      <tr><td>Ticket price<td><input type=number id="price" size=2 maxlength=2 placeholder="32"> ¢</td></tr>
-      <tr><td>Investible capital<td>$<input type=number id="capital" size=7 maxsize=10 placeholder="500"></td></tr>
+    <table style="border: solid 1px black">
+      <tr><td>Chance of winning<td><input type="number" inputmode="numeric" pattern="[0-9]*" id="win_percent" min=1 max=99 placeholder="51">%</td></tr>
+      <tr><td>Share price<td><input type=number inputmode="numeric" pattern="[0-9]*" id="price" size=2 min=1 max=99 placeholder="32"> cents</td></tr>
+      <tr><td>Investible capital<td>$<input type=number inputmode="numeric" pattern="[0-9]*" id="capital" min=100 max=999999 placeholder="500"></td></tr>
+      <tr><td>Tax on profits<td><input type=number inputmode="numeric" pattern="[0-9]*" id="tax_percent" min=0 max=99 placeholder="0">%</td></tr>
       <tr><td colspan=2></td></tr>
       <tr><td colspan=2><b>Kelly investment</b></td></tr>
-      <tr><td>Buy</td><td><span id="num_tickets"></span> tickets</td></tr>
+      <tr><td>Buy</td><td><span id="num_shares"></span> shares</td></tr>
       <tr><td>for</td><td>$<span id="invest_dollars"></span></td></tr>
       <tr><td colspan=2></td></tr>
       <tr><td colspan=2><b>Profit (if you win)</b></td></tr>
-      <tr><td>Before fees & taxes</td><td>$<span id="profit_bft"></span></td></tr>
+      <tr><td>Before fees<span id="tax1"> & taxes</span></td><td>$<span id="profit_bft"></span></td></tr>
       <tr><td>After fees</td><td>$<span id="profit_af"></span></td></tr>
-      <tr><td>After fees & taxes</td><td>$<span id="profit_aft"></span></td></tr>
+      <tr id="tax2"><td>After fees & taxes</td><td>$<span id="profit_aft"></span></td></tr>
     </table>
   </form>
   </font>
