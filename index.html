@@ -1,6 +1,11 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html * {
+  font-size: 7vw;
+}
+</style>
 <title>PredictIt Kelly bet calculator</title>
 <script>
   function e(id) {
@@ -42,7 +47,7 @@
 </script>
 </head>
 <body onload="init()">
-  <h2>PredictIt Kelly bet</h2>
+  <h1>PredictIt Kelly bet</h1>
   <form>
     <table>
       <tr><td>Chance of winning<td><input id="win_percent" size=2 maxlength=2 placeholder="51">%</td></tr>
@@ -59,5 +64,6 @@
       <tr><td>After fees & taxes</td><td>$<span id="profit_aft"></span></td></tr>
     </table>
   </form>
+  </font>
 </body>
 </html>
